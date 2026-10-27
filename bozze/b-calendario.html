@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sagrando · Bozza B Calendario</title>
+<style>
+:root{--rosso:#d1401f;--giallo:#ffc83d;--crema:#fffaf0;--scuro:#2b1a14;--linea:#eadfc7}
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--crema);color:var(--scuro);line-height:1.5}
+.top{background:var(--giallo);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:4px solid var(--rosso)}
+.logo{font-size:26px;font-weight:800;color:var(--rosso);letter-spacing:-.5px}
+.top a{color:var(--scuro);text-decoration:none;font-weight:600;font-size:14px;margin-left:18px}
+.top a.cta{background:var(--rosso);color:#fff;padding:8px 14px;border-radius:8px}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 24px;display:grid;grid-template-columns:260px 1fr;gap:32px}
+aside{position:sticky;top:16px;align-self:start}
+h1{grid-column:1/-1;font-size:clamp(28px,5vw,44px);line-height:1.1;font-weight:800}
+h1 span{color:var(--rosso)}
+.sub{grid-column:1/-1;color:#6b4a3a;margin-top:-18px}
+.filtri{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:18px}
+.filtri h3{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#8a6a58;margin:14px 0 8px}
+.filtri h3:first-child{margin-top:0}
+.chip{display:inline-block;border:1px solid var(--linea);border-radius:999px;padding:5px 12px;font-size:13px;margin:0 4px 6px 0;background:#fff}
+.chip.on{background:var(--rosso);color:#fff;border-color:var(--rosso)}
+.banner{margin-top:16px;background:repeating-linear-gradient(45deg,#fff 0 10px,#fbf1d8 10px 20px);border:1px dashed #c9a85a;border-radius:14px;height:220px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;color:#8a6a58;padding:12px}
+.mese{font-size:13px;text-transform:uppercase;letter-spacing:2px;color:var(--rosso);font-weight:800;margin:6px 0 12px}
+.riga{display:grid;grid-template-columns:72px 1fr auto;gap:16px;align-items:center;background:#fff;border:1px solid var(--linea);border-radius:14px;padding:14px;margin-bottom:12px}
+.giorno{background:var(--giallo);border-radius:12px;text-align:center;padding:8px 0;line-height:1}
+.giorno b{font-size:28px;display:block}.giorno small{font-size:12px;font-weight:700;text-transform:uppercase}
+.riga h3{font-size:18px}.riga p{font-size:14px;color:#6b4a3a}
+.badge{font-size:12px;background:#fdeadf;color:var(--rosso);padding:4px 10px;border-radius:999px;font-weight:700;white-space:nowrap}
+.org{grid-column:1/-1;background:var(--rosso);color:#fff;border-radius:18px;padding:28px;text-align:center}
+.org a{display:inline-block;margin-top:10px;background:var(--giallo);color:var(--scuro);font-weight:800;padding:10px 22px;border-radius:10px;text-decoration:none}
+footer{text-align:center;font-size:13px;color:#8a6a58;padding:20px}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}aside{position:static}.riga{grid-template-columns:60px 1fr}.badge{display:none}.top a:not(.cta){display:none}}
+</style>
+</head>
+<body>
+<div class="top"><div class="logo">Sagrando</div><div><a href="#">Calendario</a><a href="#">Organizzatori</a><a class="cta" href="#">Accedi</a></div></div>
+<div class="wrap">
+<h1>Cosa c'è <span>questo weekend</span> in Emilia-Romagna?</h1>
+<p class="sub">Il calendario delle sagre, feste di paese e fiere, aggiornato ogni giorno.</p>
+<aside>
+<div class="filtri">
+<h3>Provincia</h3><span class="chip on">Tutte</span><span class="chip">Bologna</span><span class="chip">Modena</span><span class="chip">Parma</span><span class="chip">Reggio E.</span><span class="chip">Ferrara</span>
+<h3>Categoria</h3><span class="chip on">Tutte</span><span class="chip">Sagre</span><span class="chip">Fiere</span><span class="chip">Feste</span><span class="chip">Mercatini</span>
+<h3>Quando</h3><span class="chip on">Prossimi</span><span class="chip">Weekend</span><span class="chip">Mese</span>
+</div>
+<div class="banner">Spazio pubblicitario<br>300 x 250</div>
+</aside>
+<section>
+<div class="mese">Novembre 2026</div>
+<div class="riga"><div class="giorno"><b>12</b><small>Ven</small></div><div><h3>Sagra del Tortellino</h3><p>Castelfranco Emilia (MO) · 12-14 novembre</p></div><span class="badge">Sagra</span></div>
+<div class="riga"><div class="giorno"><b>19</b><small>Ven</small></div><div><h3>Festa della Castagna</h3><p>Zocca (MO) · 19-20 novembre</p></div><span class="badge">Festa</span></div>
+<div class="riga"><div class="giorno"><b>26</b><small>Ven</small></div><div><h3>Fiera di San Martino</h3><p>Cesena (FC) · 26 novembre</p></div><span class="badge">Fiera</span></div>
+<div class="mese">Dicembre 2026</div>
+<div class="riga"><div class="giorno"><b>3</b><small>Ven</small></div><div><h3>Festa del Parmigiano</h3><p>Soragna (PR) · 3-4 dicembre</p></div><span class="badge">Sagra</span></div>
+<div class="riga"><div class="giorno"><b>8</b><small>Mer</small></div><div><h3>Mercatino di Natale</h3><p>Ferrara (FE) · 8 dicembre</p></div><span class="badge">Mercatino</span></div>
+</section>
+<div class="org"><h2>Sei un organizzatore?</h2><p>Iscrivi la tua sagra e raggiungi più visitatori.</p><a href="#">Iscrivi il tuo evento</a></div>
+</div>
+<footer>Sagrando · Privacy · Contatti</footer>
+</body>
+</html>
