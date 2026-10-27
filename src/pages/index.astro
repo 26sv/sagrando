@@ -1,16 +1,263 @@
 ---
+import Base from "../layouts/Base.astro";
+import SchedaEvento from "../components/SchedaEvento.astro";
+import { eventi, categorie, province } from "../data/eventi";
+import { periodo } from "../lib/date";
+
+const ordinati = [...eventi].sort((a, b) => a.inizio.localeCompare(b.inizio));
+const provinceUsate = [...new Set(ordinati.map((e) => e.provincia))].sort((a, b) => province[a].localeCompare(province[b]));
+const categorieUsate = [...new Set(ordinati.map((e) => e.categoria))];
+
+const datiCalendario = ordinati.map((e) => ({
+  slug: e.slug,
+  titolo: e.titolo,
+  inizio: e.inizio,
+  fine: e.fine,
+  periodo: periodo(e.inizio, e.fine),
+  comune: e.comune,
+  provincia: e.provincia,
+  categoria: e.categoria,
+  immagine: e.immagine,
+}));
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base>
+  <main class="wrap">
+    <section class="apertura">
+      <h1>Cosa c'è in programma <em>in Emilia-Romagna</em>?</h1>
+      <p>Sagre, fiere e feste di paese in un unico calendario. Scegli un giorno e trova dove andare.</p>
+    </section>
+
+    <section id="calendario" aria-label="Calendario degli eventi">
+      <div class="filtri">
+        <fieldset>
+          <legend>Provincia</legend>
+          <div id="filtro-provincia">
+            <button type="button" class="chip" data-valore="" aria-pressed="true">Tutte</button>
+            {provinceUsate.map((p) => <button type="button" class="chip" data-valore={p} aria-pressed="false">{province[p]}</button>)}
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Tipo di evento</legend>
+          <div id="filtro-categoria">
+            <button type="button" class="chip" data-valore="" aria-pressed="true">Tutti</button>
+            {categorieUsate.map((c) => <button type="button" class="chip" data-valore={c} aria-pressed="false">{categorie[c]}</button>)}
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="agenda">
+        <div class="calendario">
+          <div class="cal-testa">
+            <h2 id="cal-titolo" aria-live="polite"></h2>
+            <div class="cal-nav">
+              <button type="button" id="cal-prec" aria-label="Mese precedente">&#8249;</button>
+              <button type="button" id="cal-succ" aria-label="Mese successivo">&#8250;</button>
+            </div>
+          </div>
+          <div class="cal-griglia" id="cal-griglia"></div>
+          <p class="cal-legenda">I giorni evidenziati hanno almeno un evento. Toccane uno per vedere i dettagli.</p>
+        </div>
+
+        <aside class="pannello" aria-live="polite">
+          <h3 id="pannello-titolo">Prossimi eventi</h3>
+          <div id="pannello-lista"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="elenco" aria-label="Elenco degli eventi">
+      <h2>Tutti i prossimi eventi</h2>
+      <p class="vuoto" id="elenco-vuoto" hidden>Nessun evento con questi filtri. Prova a cambiare provincia o tipo di evento.</p>
+      <div class="griglia" id="elenco">
+        {ordinati.map((e) => <SchedaEvento evento={e} />)}
+      </div>
+    </section>
+
+    <div class="banner">Spazio pubblicitario. Qui può comparire il banner di un partner.</div>
+
+    <section id="organizzatori" class="organizzatori">
+      <h2>Organizzi una sagra, una fiera o una festa?</h2>
+      <p>Presto potrai iscrivere il tuo evento da solo e farti trovare da chi cerca cosa fare nel weekend. L'iscrizione per gli organizzatori è in arrivo.</p>
+    </section>
+  </main>
+
+  <script id="dati-eventi" type="application/json" set:html={JSON.stringify(datiCalendario)} />
+
+  <script>
+    interface Dato {
+      slug: string;
+      titolo: string;
+      inizio: string;
+      fine: string;
+      periodo: string;
+      comune: string;
+      provincia: string;
+      categoria: string;
+      immagine: string;
+    }
+
+    const MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
+    const GIORNI = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"];
+
+    const dati: Dato[] = JSON.parse(document.getElementById("dati-eventi")!.textContent || "[]");
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const iso = (a: number, m: number, g: number) => `${a}-${pad(m + 1)}-${pad(g)}`;
+    const adesso = new Date();
+    const oggi = iso(adesso.getFullYear(), adesso.getMonth(), adesso.getDate());
+
+    let anno = adesso.getFullYear();
+    let mese = adesso.getMonth();
+    let provincia = "";
+    let categoria = "";
+    let giornoSel: string | null = null;
+
+    const el = (id: string) => document.getElementById(id)!;
+    const griglia = el("cal-griglia");
+
+    function filtrati(): Dato[] {
+      return dati.filter((e) => (!provincia || e.provincia === provincia) && (!categoria || e.categoria === categoria));
+    }
+
+    function delGiorno(giorno: string): Dato[] {
+      return filtrati().filter((e) => e.inizio <= giorno && giorno <= e.fine);
+    }
+
+    function disegnaCalendario() {
+      el("cal-titolo").textContent = `${MESI[mese]} ${anno}`;
+      griglia.replaceChildren();
+
+      for (const g of GIORNI) {
+        const n = document.createElement("div");
+        n.className = "cal-giorno-nome";
+        n.textContent = g;
+        griglia.append(n);
+      }
+
+      const primo = (new Date(anno, mese, 1).getDay() + 6) % 7;
+      const giorniMese = new Date(anno, mese + 1, 0).getDate();
+      for (let i = 0; i < primo; i++) {
+        const v = document.createElement("div");
+        v.className = "cal-cella fuori";
+        griglia.append(v);
+      }
+
+      for (let g = 1; g <= giorniMese; g++) {
+        const data = iso(anno, mese, g);
+        const ev = delGiorno(data);
+        const cella = document.createElement(ev.length ? "button" : "div");
+        cella.className = "cal-cella" + (ev.length ? " con-eventi" : "") + (data === oggi ? " oggi" : "");
+        const num = document.createElement("span");
+        num.textContent = String(g);
+        cella.append(num);
+
+        if (ev.length) {
+          const punti = document.createElement("span");
+          punti.className = "cal-punti";
+          for (let k = 0; k < Math.min(ev.length, 3); k++) punti.append(document.createElement("i"));
+          cella.append(punti);
+          cella.setAttribute("type", "button");
+          cella.setAttribute("aria-pressed", String(giornoSel === data));
+          cella.setAttribute("aria-label", `${g} ${MESI[mese]}, ${ev.length} ${ev.length === 1 ? "evento" : "eventi"}`);
+          cella.addEventListener("click", () => {
+            giornoSel = giornoSel === data ? null : data;
+            aggiorna();
+          });
+        } else if (data === oggi) {
+          cella.setAttribute("aria-label", `${g} ${MESI[mese]}, oggi`);
+        }
+        griglia.append(cella);
+      }
+    }
+
+    function miniEvento(e: Dato): HTMLElement {
+      const a = document.createElement("a");
+      a.className = "mini";
+      a.href = `/evento/${e.slug}/`;
+      const img = document.createElement("img");
+      img.src = e.immagine;
+      img.alt = "";
+      img.width = 84;
+      img.height = 64;
+      const testo = document.createElement("div");
+      const t = document.createElement("b");
+      t.textContent = e.titolo;
+      const s = document.createElement("span");
+      s.textContent = `${e.periodo} · ${e.comune}`;
+      testo.append(t, s);
+      a.append(img, testo);
+      return a;
+    }
+
+    function disegnaPannello() {
+      const lista = el("pannello-lista");
+      lista.replaceChildren();
+      let elementi: Dato[];
+      if (giornoSel) {
+        const [a, m, g] = giornoSel.split("-").map(Number);
+        el("pannello-titolo").textContent = `Eventi del ${g} ${MESI[m - 1]} ${a}`;
+        elementi = delGiorno(giornoSel);
+      } else {
+        el("pannello-titolo").textContent = "Prossimi eventi";
+        elementi = filtrati().filter((e) => e.fine >= oggi).slice(0, 4);
+      }
+      if (!elementi.length) {
+        const p = document.createElement("p");
+        p.className = "vuoto";
+        p.textContent = "Nessun evento con questi filtri.";
+        lista.append(p);
+        return;
+      }
+      for (const e of elementi) lista.append(miniEvento(e));
+    }
+
+    function disegnaElenco() {
+      const visibili = new Set(filtrati().filter((e) => e.fine >= oggi).map((e) => e.slug));
+      let conta = 0;
+      document.querySelectorAll<HTMLElement>("#elenco .scheda").forEach((s) => {
+        const mostra = visibili.has(s.dataset.slug || "");
+        s.hidden = !mostra;
+        if (mostra) conta++;
+      });
+      (el("elenco-vuoto") as HTMLElement).hidden = conta > 0;
+    }
+
+    function aggiorna() {
+      disegnaCalendario();
+      disegnaPannello();
+      disegnaElenco();
+    }
+
+    function collegaFiltro(id: string, applica: (v: string) => void) {
+      const contenitore = el(id);
+      contenitore.addEventListener("click", (ev) => {
+        const b = (ev.target as HTMLElement).closest<HTMLButtonElement>("button.chip");
+        if (!b) return;
+        contenitore.querySelectorAll("button.chip").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+        applica(b.dataset.valore || "");
+        giornoSel = null;
+        aggiorna();
+      });
+    }
+
+    collegaFiltro("filtro-provincia", (v) => (provincia = v));
+    collegaFiltro("filtro-categoria", (v) => (categoria = v));
+
+    function vai(delta: number) {
+      mese += delta;
+      if (mese < 0) {
+        mese = 11;
+        anno--;
+      } else if (mese > 11) {
+        mese = 0;
+        anno++;
+      }
+      giornoSel = null;
+      aggiorna();
+    }
+    el("cal-prec").addEventListener("click", () => vai(-1));
+    el("cal-succ").addEventListener("click", () => vai(1));
+
+    aggiorna();
+  </script>
+</Base>

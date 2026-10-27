@@ -1,0 +1,38 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  titolo?: string;
+  descrizione?: string;
+}
+
+const {
+  titolo = "Sagrando, sagre e feste dell'Emilia-Romagna",
+  descrizione = "Il calendario delle sagre, delle fiere e delle feste di paese in Emilia-Romagna.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={descrizione} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{titolo}</title>
+  </head>
+  <body>
+    <div class="ghirlanda" aria-hidden="true"></div>
+    <div class="wrap">
+      <header class="testata">
+        <a class="logo" href="/">Sagrando<small>Sagre e feste d'Emilia-Romagna</small></a>
+        <nav class="menu" aria-label="Menu principale">
+          <a href="/#calendario">Calendario</a>
+          <a href="/#organizzatori" class="btn">Per gli organizzatori</a>
+        </nav>
+      </header>
+    </div>
+    <slot />
+    <footer class="piede">Sagrando, il portale delle sagre e delle feste dell'Emilia-Romagna.</footer>
+  </body>
+</html>

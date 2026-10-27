@@ -1,0 +1,36 @@
+---
+import Base from "../../layouts/Base.astro";
+import { eventi, categorie, province } from "../../data/eventi";
+import { periodo } from "../../lib/date";
+
+export function getStaticPaths() {
+  return eventi.map((evento) => ({ params: { slug: evento.slug }, props: { evento } }));
+}
+
+const { evento } = Astro.props;
+---
+
+<Base titolo={`${evento.titolo} a ${evento.comune} | Sagrando`} descrizione={evento.descrizione}>
+  <main class="wrap">
+    <a class="indietro" href="/#calendario">&larr; Torna al calendario</a>
+    <div class="evento-testa">
+      <img src={evento.immagine} alt={`Immagine di ${evento.titolo}`} width="800" height="500" />
+      <div>
+        <div class="tags">
+          <span class="pill">{categorie[evento.categoria]}</span>
+          {evento.prova && <span class="pill prova">Evento di prova</span>}
+        </div>
+        <h1>{evento.titolo}</h1>
+        <ul class="dati">
+          <li><b>Quando</b><span>{periodo(evento.inizio, evento.fine)}</span></li>
+          <li><b>Orari</b><span>{evento.orari}</span></li>
+          <li><b>Dove</b><span>{evento.luogo}, {evento.comune} ({evento.provincia}), {province[evento.provincia]}</span></li>
+          <li><b>Ingresso</b><span>{evento.ingresso}</span></li>
+          {evento.partner.length > 0 && <li><b>Partner</b><span>{evento.partner.join(", ")}</span></li>}
+          {evento.sito && <li><b>Sito</b><span><a href={evento.sito} rel="noopener noreferrer">{evento.sito.replace("https://", "")}</a></span></li>}
+        </ul>
+      </div>
+    </div>
+    <p class="descrizione">{evento.descrizione}</p>
+  </main>
+</Base>

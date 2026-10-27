@@ -1,0 +1,33 @@
+---
+import { categorie, province, type Evento } from "../data/eventi";
+import { periodoBreve } from "../lib/date";
+
+interface Props {
+  evento: Evento;
+}
+
+const { evento } = Astro.props;
+const url = `/evento/${evento.slug}/`;
+---
+
+<article
+  class="scheda"
+  data-slug={evento.slug}
+  data-inizio={evento.inizio}
+  data-fine={evento.fine}
+  data-provincia={evento.provincia}
+  data-categoria={evento.categoria}
+>
+  <a class="foto" href={url} tabindex="-1" aria-hidden="true">
+    <img src={evento.immagine} alt="" loading="lazy" width="800" height="500" />
+    <span class="data-tag">{periodoBreve(evento.inizio, evento.fine)}</span>
+  </a>
+  <div class="corpo">
+    <h3><a href={url}>{evento.titolo}</a></h3>
+    <p class="dove">{evento.comune} ({evento.provincia}), {province[evento.provincia]}</p>
+    <div class="tags">
+      <span class="pill">{categorie[evento.categoria]}</span>
+      {evento.prova && <span class="pill prova">Evento di prova</span>}
+    </div>
+  </div>
+</article>
