@@ -1,13 +1,14 @@
 ---
 import { categorie, province, type Evento } from "../data/eventi";
 import { periodoBreve } from "../lib/date";
+import { url as percorso } from "../lib/url";
 
 interface Props {
   evento: Evento;
 }
 
 const { evento } = Astro.props;
-const url = `/evento/${evento.slug}/`;
+const url = percorso(`/evento/${evento.slug}/`);
 ---
 
 <article

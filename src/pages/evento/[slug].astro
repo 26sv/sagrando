@@ -2,6 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import { eventi, categorie, province } from "../../data/eventi";
 import { periodo } from "../../lib/date";
+import { url } from "../../lib/url";
 
 export function getStaticPaths() {
   return eventi.map((evento) => ({ params: { slug: evento.slug }, props: { evento } }));
@@ -12,7 +13,7 @@ const { evento } = Astro.props;
 
 <Base titolo={`${evento.titolo} a ${evento.comune} | Sagrando`} descrizione={evento.descrizione}>
   <main class="wrap">
-    <a class="indietro" href="/#calendario">&larr; Torna al calendario</a>
+    <a class="indietro" href={url("/#calendario")}>&larr; Torna al calendario</a>
     <div class="evento-testa">
       <img src={evento.immagine} alt={`Immagine di ${evento.titolo}`} width="800" height="500" />
       <div>

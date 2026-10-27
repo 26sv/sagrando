@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { url } from "../lib/url";
 
 interface Props {
   titolo?: string;
@@ -20,23 +21,23 @@ const {
     <meta name="description" content={descrizione} />
     <!-- Anteprima: nascosta ai motori di ricerca. Togliere questa riga al lancio vero. -->
     <meta name="robots" content="noindex, nofollow" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={url("/favicon.svg")} />
     <title>{titolo}</title>
   </head>
   <body>
     <div class="ghirlanda" aria-hidden="true"></div>
     <div class="wrap">
       <header class="testata">
-        <a class="logo" href="/">Sagrando<small>Sagre e feste d'Emilia-Romagna</small></a>
+        <a class="logo" href={url("/")}>Sagrando<small>Sagre e feste d'Emilia-Romagna</small></a>
         <nav class="menu" aria-label="Menu principale">
-          <a href="/#calendario">Calendario</a>
-          <a href="/#organizzatori" class="btn">Per gli organizzatori</a>
+          <a href={url("/#calendario")}>Calendario</a>
+          <a href={url("/#organizzatori")} class="btn">Per gli organizzatori</a>
         </nav>
       </header>
     </div>
     <slot />
     <footer class="piede">
-      Sagrando, il portale delle sagre e delle feste dell'Emilia-Romagna. <a href="/privacy/">Privacy</a>
+      Sagrando, il portale delle sagre e delle feste dell'Emilia-Romagna. <a href={url("/privacy/")}>Privacy</a>
     </footer>
   </body>
 </html>

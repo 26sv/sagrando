@@ -1,10 +1,11 @@
 ---
 import Base from "../../layouts/Base.astro";
+import { url } from "../../lib/url";
 ---
 
 <Base titolo="Privacy | Sagrando" descrizione="Come Sagrando tratta i dati personali dei visitatori.">
   <main class="wrap testo">
-    <a class="indietro" href="/">&larr; Torna alla home</a>
+    <a class="indietro" href={url("/")}>&larr; Torna alla home</a>
     <h1>Privacy</h1>
     <p>Questa è la versione di anteprima di Sagrando. In questa fase il sito funziona così:</p>
     <ul>

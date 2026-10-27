@@ -1,4 +1,6 @@
 // Eventi di prova. Quando arriva il database (Supabase) questo file viene sostituito dai dati veri.
+import { url } from "../lib/url";
+
 export type Categoria = "sagra" | "fiera" | "festa" | "mercatino" | "concerto";
 
 export interface Evento {
@@ -39,7 +41,7 @@ export const province: Record<string, string> = {
   RN: "Rimini",
 };
 
-const img = (c: Categoria) => `/img/eventi/${c}.svg`;
+const img = (c: Categoria) => url(`/img/eventi/${c}.svg`);
 
 export const eventi: Evento[] = [
   {
