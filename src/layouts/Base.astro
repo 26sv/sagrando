@@ -18,6 +18,8 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={descrizione} />
+    <!-- Anteprima: nascosta ai motori di ricerca. Togliere questa riga al lancio vero. -->
+    <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{titolo}</title>
   </head>
@@ -33,6 +35,8 @@ const {
       </header>
     </div>
     <slot />
-    <footer class="piede">Sagrando, il portale delle sagre e delle feste dell'Emilia-Romagna.</footer>
+    <footer class="piede">
+      Sagrando, il portale delle sagre e delle feste dell'Emilia-Romagna. <a href="/privacy/">Privacy</a>
+    </footer>
   </body>
 </html>
